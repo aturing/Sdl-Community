@@ -6,7 +6,7 @@
 		<PluginDeploymentPath>$(AppData)\Sdl\Sdl Trados Studio\16beta\Plugins</PluginDeploymentPath>
 		<CreatePluginPackage>true</CreatePluginPackage>
 		<AssemblyOriginatorKeyFile>SdlCommunity.snk</AssemblyOriginatorKeyFile>
-		<TradosFolder>$(MSBuildProgramFiles32)\SDL\SDL Trados Studio\Studio16beta</TradosFolder>
+		<TradosFolder>$(MSBuildThisFileDirectory)..\..\lib\SDL</TradosFolder>
 		<SignAssembly>true</SignAssembly>
 	</PropertyGroup>
   <ItemGroup>
