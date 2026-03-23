@@ -1,6 +1,7 @@
 name: Build DeepL
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'DeepLMTProvider/**'
