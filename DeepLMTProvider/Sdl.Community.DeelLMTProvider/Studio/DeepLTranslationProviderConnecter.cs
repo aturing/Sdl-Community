@@ -103,16 +103,17 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 			{
 				sourceText = normalizeHelper.NormalizeText(sourceText);
 
-				var content = new StringContent($"text={sourceText}" +
+				var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{GetBaseUrl(ApiKey)}v2/translate");
+				requestMessage.Headers.Add("Authorization", $"DeepL-Auth-Key {ApiKey}");
+				requestMessage.Content = new StringContent($"text={sourceText}" +
 												$"&source_lang={sourceLanguage}" +
 												$"&target_lang={targetLanguage}" +
 												$"&formality={formality.ToString().ToLower()}" +
 												"&preserve_formatting=1" +
-												"&tag_handling=xml" +
-												$"&auth_key={ApiKey}",
+												"&tag_handling=xml",
 					Encoding.UTF8, "application/x-www-form-urlencoded");
 
-				var response = AppInitializer.Client.PostAsync("https://api.deepl.com/v1/translate", content).Result;
+				var response = AppInitializer.Client.SendAsync(requestMessage).Result;
 				response.EnsureSuccessStatusCode();
 
 				var translationResponse = response.Content?.ReadAsStringAsync().Result;
@@ -142,10 +143,10 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 
 		private static string GetSupportedLanguages(string type, string apiKey)
 		{
-			var content = new StringContent($"type={type}" + $"&auth_key={apiKey}", Encoding.UTF8,
-				"application/x-www-form-urlencoded");
+			var request = new HttpRequestMessage(HttpMethod.Get, $"{GetBaseUrl(apiKey)}v2/languages?type={type}");
+			request.Headers.Add("Authorization", $"DeepL-Auth-Key {apiKey}");
 
-			var response = AppInitializer.Client.PostAsync("https://api.deepl.com/v1/languages", content).Result;
+			var response = AppInitializer.Client.SendAsync(request).Result;
 			response.EnsureSuccessStatusCode();
 
 			return response.Content?.ReadAsStringAsync().Result;
@@ -161,9 +162,18 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 			return supportsFormality;
 		}
 
+		private static string GetBaseUrl(string apiKey)
+		{
+			return apiKey?.EndsWith(":fx") == true
+				? "https://api-free.deepl.com/"
+				: "https://api.deepl.com/";
+		}
+
 		private static HttpResponseMessage IsValidApiKey(string apiKey)
 		{
-			return AppInitializer.Client.GetAsync($"https://api.deepl.com/v1/usage?auth_key={apiKey}").Result;
+			var request = new HttpRequestMessage(HttpMethod.Get, $"{GetBaseUrl(apiKey)}v2/usage");
+			request.Headers.Add("Authorization", $"DeepL-Auth-Key {apiKey}");
+			return AppInitializer.Client.SendAsync(request).Result;
 		}
 
 		private static void OnApiKeyChanged()
