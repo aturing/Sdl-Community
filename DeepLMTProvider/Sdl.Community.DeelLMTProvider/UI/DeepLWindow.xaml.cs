@@ -116,7 +116,9 @@ namespace Sdl.Community.DeepLMTProvider.UI
 
                 SetValidationBlockMessage(Visibility.Visible, isApiKeyValidResponse?.StatusCode == HttpStatusCode.Forbidden
                     ? "Authorization failed. Please supply a valid API Key."
-                    : $"{isApiKeyValidResponse?.StatusCode}");
+                    : isApiKeyValidResponse == null
+                        ? "Could not connect to DeepL API. Please check your internet connection."
+                        : $"{isApiKeyValidResponse.StatusCode}");
 
                 return;
             }
@@ -162,6 +164,7 @@ namespace Sdl.Community.DeepLMTProvider.UI
 
                 ApiKeyBox.Password = credentialStore.Credential;
                 Options.ApiKey = ApiKeyBox.Password;
+                DeepLTranslationProviderConnecter.ApiKey = Options.ApiKey;
             }
         }
 
