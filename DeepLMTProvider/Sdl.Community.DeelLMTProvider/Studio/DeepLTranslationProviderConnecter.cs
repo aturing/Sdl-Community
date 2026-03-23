@@ -178,7 +178,16 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 
 		private static void OnApiKeyChanged()
 		{
-			IsApiKeyValidResponse = IsValidApiKey(ApiKey);
+			try
+			{
+				IsApiKeyValidResponse = IsValidApiKey(ApiKey);
+			}
+			catch (Exception ex)
+			{
+				_logger.Error(ex);
+				IsApiKeyValidResponse = null;
+				return;
+			}
 
 			if (!IsApiKeyValidResponse.IsSuccessStatusCode) return;
 
