@@ -16,3 +16,8 @@ jobs:
         run: nuget restore DeepLMTProvider/Sdl.Community.DeelLMTProvider/Sdl.Community.DeepLMTProvider.csproj
       - name: Build
         run: msbuild DeepLMTProvider/Sdl.Community.DeelLMTProvider/Sdl.Community.DeepLMTProvider.csproj /p:Configuration=Release
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeepLMTProvider
+          path: ${{ env.APPDATA }}\Sdl\Sdl Trados Studio\16beta\Plugins\*.sdlplugin
