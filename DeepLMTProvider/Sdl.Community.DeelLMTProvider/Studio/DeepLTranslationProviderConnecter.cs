@@ -115,13 +115,9 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 					Encoding.UTF8, "application/x-www-form-urlencoded");
 
 
-				var request = new HttpRequestMessage
-				{
-					Content = content,
-					Method = HttpMethod.Post,
-					RequestUri = new Uri("https://api.deepl.com/v1/translate"),
-					Headers = { { "Authorization", $"DeepL-Auth-Key {ApiKey}" } }
-				};
+				var request = new HttpRequestMessage(HttpMethod.Post, $"{GetBaseUrl(ApiKey)}v2/translate");
+				request.Headers.Add("Authorization", $"DeepL-Auth-Key {ApiKey}");
+				request.Content = content;
 				var response = AppInitializer.Client.SendAsync(request).Result;
 				response.EnsureSuccessStatusCode();
 
@@ -152,10 +148,10 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 
 		private static string GetSupportedLanguages(string type, string apiKey)
 		{
-			var content = new StringContent($"type={type}" + $"&auth_key={apiKey}", Encoding.UTF8,
-				"application/x-www-form-urlencoded");
+			var request = new HttpRequestMessage(HttpMethod.Get, $"{GetBaseUrl(apiKey)}v2/languages?type={type}");
+			request.Headers.Add("Authorization", $"DeepL-Auth-Key {apiKey}");
 
-			var response = AppInitializer.Client.PostAsync("https://api.deepl.com/v1/languages", content).Result;
+			var response = AppInitializer.Client.SendAsync(request).Result;
 			response.EnsureSuccessStatusCode();
 
 			return response.Content?.ReadAsStringAsync().Result;
@@ -171,9 +167,18 @@ namespace Sdl.Community.DeepLMTProvider.Studio
 			return supportsFormality;
 		}
 
+		private static string GetBaseUrl(string apiKey)
+		{
+			return apiKey?.EndsWith(":fx") == true
+				? "https://api-free.deepl.com/"
+				: "https://api.deepl.com/";
+		}
+
 		private static HttpResponseMessage IsValidApiKey(string apiKey)
 		{
-			return AppInitializer.Client.GetAsync($"https://api.deepl.com/v1/usage?auth_key={apiKey}").Result;
+			var request = new HttpRequestMessage(HttpMethod.Get, $"{GetBaseUrl(apiKey)}v2/usage");
+			request.Headers.Add("Authorization", $"DeepL-Auth-Key {apiKey}");
+			return AppInitializer.Client.SendAsync(request).Result;
 		}
 
 		private static void OnApiKeyChanged()
