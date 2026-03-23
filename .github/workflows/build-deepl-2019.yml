@@ -1,0 +1,29 @@
+name: Build DeepL 2019
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - studio_2019
+    paths:
+      - 'DeepLMTProvider/**'
+      - 'lib/SDL/**'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - name: Restore NuGet packages
+        run: nuget restore DeepLMTProvider/Sdl.Community.DeelLMTProvider/Sdl.Community.DeepLMTProvider.csproj
+      - name: Build
+        run: msbuild DeepLMTProvider/Sdl.Community.DeelLMTProvider/Sdl.Community.DeepLMTProvider.csproj /p:Configuration=Release
+      - name: Find sdlplugin
+        run: Get-ChildItem -Path . -Recurse -Filter *.sdlplugin | Select-Object FullName
+        shell: pwsh
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeepLMTProvider-2019
+          path: '**/*.sdlplugin'

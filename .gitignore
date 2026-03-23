@@ -257,3 +257,15 @@ IATETerminologyProvider/IATETerminologyProvider/pluginpackage.manifest_LOCAL_178
 /TMBackup/build/de/Sdl.Core.PluginFramework.resources.dll
 /TMBackup/build/de/Microsoft.Win32.TaskScheduler.resources.dll
 TQA/TQA/Properties/launchSettings.json
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# SDL DLLs — allow lib/SDL explicitly
+*.dll
+!lib/SDL/*.dll
