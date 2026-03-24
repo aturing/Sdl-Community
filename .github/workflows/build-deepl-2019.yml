@@ -15,13 +15,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
-      - name: Add ResGen.exe to PATH
+      - name: Register ResGen.exe in Windows registry
         shell: pwsh
         run: |
           $resgen = Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs" -Recurse -Filter "ResGen.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($resgen) {
-            echo $resgen.DirectoryName >> $env:GITHUB_PATH
             Write-Host "Found ResGen.exe at $($resgen.FullName)"
+            $regPath = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\NETFXSDK\4.6.2\WinSDK-NetFx40Tools-x86"
+            New-Item -Path $regPath -Force | Out-Null
+            Set-ItemProperty -Path $regPath -Name "InstallationFolder" -Value "$($resgen.DirectoryName)\"
           } else {
             Write-Error "ResGen.exe not found"
           }
