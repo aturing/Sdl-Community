@@ -5,7 +5,7 @@
   <Description>This plugin provides machine translation results from the DeepL Translator.</Description>
   <Author>SDL Community Developers</Author>
   <Include>
-	  <File>Sdl.Community.DeepLMTProvider.WPF.dll</File>
+	  <File>Sdl.Community.DeepLMTProvider.dll</File>
 	  <File>MahApps.Metro.dll</File>
 	  <File>System.Windows.Interactivity.dll</File>
 	</Include>
