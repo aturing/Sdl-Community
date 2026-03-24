@@ -64,12 +64,15 @@
     </Reference>
     <Reference Include="Sdl.Desktop.Platform">
       <HintPath>$(TradosFolder)\Sdl.Desktop.Platform.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sdl.Desktop.Platform.Controls">
       <HintPath>$(TradosFolder)\Sdl.Desktop.Platform.Controls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sdl.FileTypeSupport.Framework.Core">
       <HintPath>$(TradosFolder)\Sdl.FileTypeSupport.Framework.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sdl.LanguagePlatform.Core">
       <HintPath>$(TradosFolder)\Sdl.LanguagePlatform.Core.dll</HintPath>
