@@ -15,6 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
+      - name: Add ResGen.exe to PATH
+        shell: pwsh
+        run: |
+          $resgen = Get-ChildItem "C:\Program Files (x86)\Microsoft SDKs" -Recurse -Filter "ResGen.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($resgen) {
+            echo $resgen.DirectoryName >> $env:GITHUB_PATH
+            Write-Host "Found ResGen.exe at $($resgen.FullName)"
+          } else {
+            Write-Error "ResGen.exe not found"
+          }
       - name: Restore NuGet packages
         run: nuget restore DeepLMTProvider/Sdl.Community.DeelLMTProvider/Sdl.Community.DeepLMTProvider.csproj
       - name: Build
