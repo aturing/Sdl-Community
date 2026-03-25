@@ -34,6 +34,17 @@ jobs:
       - name: Find sdlplugin
         run: Get-ChildItem -Path . -Recurse -Filter *.sdlplugin | Select-Object FullName
         shell: pwsh
+      - name: List sdlplugin contents
+        shell: pwsh
+        run: |
+          $plugin = Get-ChildItem -Path . -Recurse -Filter *.sdlplugin | Select-Object -First 1
+          if ($plugin) {
+            Write-Host "=== Contents of $($plugin.Name) ==="
+            Add-Type -AssemblyName System.IO.Compression.FileSystem
+            $zip = [System.IO.Compression.ZipFile]::OpenRead($plugin.FullName)
+            $zip.Entries | ForEach-Object { Write-Host $_.FullName }
+            $zip.Dispose()
+          }
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
