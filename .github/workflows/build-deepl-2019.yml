@@ -34,7 +34,7 @@ jobs:
       - name: Find sdlplugin
         run: Get-ChildItem -Path . -Recurse -Filter *.sdlplugin | Select-Object FullName
         shell: pwsh
-      - name: List sdlplugin contents
+      - name: List sdlplugin contents and show plugin.xml
         shell: pwsh
         run: |
           $plugin = Get-ChildItem -Path . -Recurse -Filter *.sdlplugin | Select-Object -First 1
@@ -43,6 +43,13 @@ jobs:
             Add-Type -AssemblyName System.IO.Compression.FileSystem
             $zip = [System.IO.Compression.ZipFile]::OpenRead($plugin.FullName)
             $zip.Entries | ForEach-Object { Write-Host $_.FullName }
+            $entry = $zip.Entries | Where-Object { $_.Name -like "*.plugin.xml" } | Select-Object -First 1
+            if ($entry) {
+              Write-Host "=== $($entry.FullName) ==="
+              $reader = New-Object System.IO.StreamReader($entry.Open())
+              Write-Host $reader.ReadToEnd()
+              $reader.Dispose()
+            }
             $zip.Dispose()
           }
       - name: Upload plugin artifact
